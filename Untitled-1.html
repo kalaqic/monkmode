@@ -887,11 +887,12 @@
                     alert('⚠️ Night Attack Warning! You have been online for over 1 hour. Your troops are at risk!');
                 }
                 
-                if (minutes > 70) {
-                    gameState.troops = Math.floor(gameState.troops * 0.8);
-                    updateStats();
-                    alert('🌙 Night Attack! You lost 20% of your troops due to overuse. Return tomorrow, warrior.');
-                }
+               if (minutes > 70) {
+    gameState.troops = Math.floor(gameState.troops * 0.8);
+    updateStats();
+    syncTroopsWithGameState();
+    alert('🌙 Night Attack! You lost 20% of your troops due to overuse. Return tomorrow, warrior.');
+}
             }, 60000);
         }
 
@@ -924,30 +925,32 @@ let troops = [];
 let troopId = 0;
 
 function createTroop(x, y) {
+    const patrolPath = generatePatrolPath(x, y); // Each troop gets a unique path
+    const startIndex = Math.floor(Math.random() * patrolPath.length); // Random start
     const troop = {
         id: troopId++,
         x: x,
         y: y,
         element: null,
-        patrolPath: generatePatrolPath(x, y),
-        currentPathIndex: 0,
+        patrolPath: patrolPath,
+        currentPathIndex: startIndex,
         isMoving: false
     };
-    
+
     // Create DOM element
     const troopElement = document.createElement('div');
     troopElement.className = 'troop';
     troopElement.style.left = x + 'px';
     troopElement.style.top = y + 'px';
     troopElement.dataset.troopId = troop.id;
-    
+
     document.getElementById('mapViewport').appendChild(troopElement);
     troop.element = troopElement;
     troops.push(troop);
-    
-    // Start patrolling after a short delay
+
+    // Start patrolling after a short random delay
     setTimeout(() => startPatrolling(troop), Math.random() * 2000);
-    
+
     return troop;
 }
 
@@ -998,8 +1001,8 @@ function startPatrolling(troop) {
     setTimeout(() => {
         troop.isMoving = false;
         troop.element.classList.remove('moving');
-        // Continue patrolling
-        setTimeout(() => startPatrolling(troop), 1000 + Math.random() * 3000);
+        // Continue patrolling after a random delay between 10 and 60 seconds
+        setTimeout(() => startPatrolling(troop), Math.random() * 50000 + 10000);
     }, 2000);
 }
 
@@ -1212,6 +1215,7 @@ function clearAllTroops() {
             updateStats();
             populateHabitChecklist();
             setupMapInteraction();
+            syncTroopsWithGameState();
         }
 
         let mapTransform = { x: 0, y: 0, scale: 1 };
@@ -1366,6 +1370,7 @@ function completeCheckIn() {
         }
 
         updateStats();
+        syncTroopsWithGameState();
         
     } else {
         alert(`⚠️ You have completed ${completedHabits.length}/${allHabits.length} habits. Complete all habits to gain XP and troops.`);
@@ -1456,6 +1461,7 @@ for (let i = 0; i < bladeCount; i++) {
         if (gameState.grassSize) {
             setTimeout(() => {
                 expandGrassOnLevelUp(false);
+                setTimeout(syncTroopsWithGameState, 50);
             }, 200);
         }
 
@@ -1541,6 +1547,49 @@ function populateHabitChecklist() {
         `;
         checklist.appendChild(div);
     });
+}
+
+function syncTroopsWithGameState() {
+    // Remove all current troop elements
+    clearAllTroops();
+
+    // Get grass area for spawning
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return;
+    const grassRect = grass.getBoundingClientRect();
+    const mapRect = document.getElementById('mapViewport').getBoundingClientRect();
+    const grassCenterX = grassRect.left - mapRect.left + grassRect.width / 2;
+    const grassCenterY = grassRect.top - mapRect.top + grassRect.height / 2;
+    const spawnRadius = Math.min(grassRect.width, grassRect.height) / 2 - 30;
+
+    for (let i = 0; i < gameState.troops; i++) {
+        const angle = (i / gameState.troops) * Math.PI * 2 + Math.random() * 0.5;
+        const r = spawnRadius * (0.5 + Math.random() * 0.5);
+        const x = grassCenterX + Math.cos(angle) * r;
+        const y = grassCenterY + Math.sin(angle) * r;
+        createTroop(x, y);
+    }
+}
+function syncTroopsWithGameState() {
+    // Remove all current troop elements
+    clearAllTroops();
+
+    // Get grass area for spawning
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return;
+    const grassRect = grass.getBoundingClientRect();
+    const mapRect = document.getElementById('mapViewport').getBoundingClientRect();
+    const grassCenterX = grassRect.left - mapRect.left + grassRect.width / 2;
+    const grassCenterY = grassRect.top - mapRect.top + grassRect.height / 2;
+    const spawnRadius = Math.min(grassRect.width, grassRect.height) / 2 - 30;
+
+    for (let i = 0; i < gameState.troops; i++) {
+        const angle = (i / gameState.troops) * Math.PI * 2 + Math.random() * 0.5;
+        const r = spawnRadius * (0.5 + Math.random() * 0.5);
+        const x = grassCenterX + Math.cos(angle) * r;
+        const y = grassCenterY + Math.sin(angle) * r;
+        createTroop(x, y);
+    }
 }
     </script>
 </body>

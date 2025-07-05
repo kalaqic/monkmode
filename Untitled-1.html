@@ -1167,7 +1167,6 @@ window.addEventListener('DOMContentLoaded', () => {
             closeTemple();
         }
 
-        // Expand grass/fog cleared on each level up
 function expandGrassOnLevelUp(showGrassAlert = false) {
     // Each level up, reveal more grass (e.g. +10%)
     gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
@@ -1201,34 +1200,49 @@ function expandGrassOnLevelUp(showGrassAlert = false) {
         grass.style.zIndex = '1'; // Behind the temple icon
         mapViewport.insertBefore(grass, mapViewport.firstChild);
     }
-    // Make it look like grass with texture and random blades
+    
+    // Set basic grass appearance
     grass.style.width = `${size}px`;
     grass.style.height = `${size}px`;
-
-    // Generate a random grass SVG pattern (smaller, more common, random placement)
-    let svg = '';
-    const bladeCount = Math.floor((size * size) / 120); // denser
-    for (let i = 0; i < bladeCount; i++) {
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        const h = 8 + Math.random() * 10;
-        const c = Math.random() > 0.5 ? '#3ecf4a' : '#2fa13a';
-        svg += `<path d="M${x},${y+12} Q${x+1},${y+6} ${x+2},${y+12}" stroke='${c}' stroke-width='1.1' fill='none'/>`;
-    }
-    const svgStr = `<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
-    const encoded = encodeURIComponent(svgStr);
-
-    grass.style.background = `
-        linear-gradient(180deg, #4be04b 0%, #2fa13a 100%),
-        url('data:image/svg+xml;utf8,${encoded}') repeat,
-        repeating-linear-gradient(135deg, #43e04a22 0 4px, transparent 4px 12px)
-    `;
-    grass.style.backgroundBlendMode = 'multiply';
     grass.style.backgroundColor = '#3ecf4a';
-    grass.style.boxShadow = '0 4px 24px 0 #2fa13a44';
-    grass.style.opacity = '1';
     grass.style.borderRadius = '10px';
     grass.style.border = '2px solid #2fa13a';
+    grass.style.boxShadow = '0 4px 24px 0 #2fa13a44';
+    grass.style.opacity = '1';
+
+    // Clear existing grass blades
+    grass.innerHTML = '';
+
+    // Generate random grass blades
+   const bladeCount = Math.floor((size * size) / 800); // Adjust density
+for (let i = 0; i < bladeCount; i++) {
+    const blade = document.createElement('div');
+    blade.style.position = 'absolute';
+    blade.style.left = `${Math.random() * 90 + 5}%`; // Random position with 5% margin
+    blade.style.top = `${Math.random() * 90 + 5}%`;
+    blade.style.width = '4px'; // Changed from 2px to 4px (thicker)
+    blade.style.height = `${4 + Math.random() * 8}px`; // Changed from 8-20px to 4-12px (smaller)
+    blade.style.backgroundColor = Math.random() > 0.6 ? '#4be04b' : '#2fa13a'; // Random shade
+    blade.style.borderRadius = '50% 50% 0 0';
+    blade.style.transform = `rotate(${Math.random() * 30 - 15}deg)`; // Random rotation
+    blade.style.opacity = '0.8';
+    grass.appendChild(blade);
+}
+
+    // Add some flower dots randomly
+    const flowerCount = Math.floor(bladeCount / 10);
+    for (let i = 0; i < flowerCount; i++) {
+        const flower = document.createElement('div');
+        flower.style.position = 'absolute';
+        flower.style.left = `${Math.random() * 80 + 10}%`;
+        flower.style.top = `${Math.random() * 80 + 10}%`;
+        flower.style.width = '4px';
+        flower.style.height = '4px';
+        flower.style.backgroundColor = Math.random() > 0.5 ? '#ffff00' : '#ffffff';
+        flower.style.borderRadius = '50%';
+        flower.style.boxShadow = '0 0 2px rgba(255,255,255,0.8)';
+        grass.appendChild(flower);
+    }
 }
 
 // Restore grass on reload (NO alert)

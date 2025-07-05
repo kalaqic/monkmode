@@ -318,7 +318,58 @@
             border-color: #666;
             opacity: 0.5;
         }
+/* Troop Animation Styles */
+.troop {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #ffd700;
+    border-radius: 50%;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
 
+.troop::before {
+    content: '⚔️';
+    font-size: 10px;
+}
+
+.troop.moving {
+    transition: all 2s ease-in-out;
+}
+
+.troop.patrolling {
+    animation: patrol 8s linear infinite;
+}
+
+@keyframes patrol {
+    0% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(30px) translateY(-20px); }
+    50% { transform: translateX(60px) translateY(0); }
+    75% { transform: translateX(30px) translateY(20px); }
+    100% { transform: translateX(0) translateY(0); }
+}
+
+.troop-trail {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,215,0,0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+    animation: fadeTrail 1s ease-out forwards;
+}
+
+@keyframes fadeTrail {
+    0% { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.5); }
+}
         .building.temple {
             background: linear-gradient(135deg, #ffd700 60%, #fffbe6 100%);
             border: 3px solid #3ecf4a;
@@ -843,6 +894,133 @@
                 showScrollOfAwakening();
             }
         }
+        // Troop Management
+let troops = [];
+let troopId = 0;
+
+function createTroop(x, y) {
+    const troop = {
+        id: troopId++,
+        x: x,
+        y: y,
+        element: null,
+        patrolPath: generatePatrolPath(x, y),
+        currentPathIndex: 0,
+        isMoving: false
+    };
+    
+    // Create DOM element
+    const troopElement = document.createElement('div');
+    troopElement.className = 'troop';
+    troopElement.style.left = x + 'px';
+    troopElement.style.top = y + 'px';
+    troopElement.dataset.troopId = troop.id;
+    
+    document.getElementById('mapViewport').appendChild(troopElement);
+    troop.element = troopElement;
+    troops.push(troop);
+    
+    // Start patrolling after a short delay
+    setTimeout(() => startPatrolling(troop), Math.random() * 2000);
+    
+    return troop;
+}
+
+function generatePatrolPath(centerX, centerY) {
+    // Get grass area
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return [];
+
+    // Get grass center and radius
+    const grassRect = grass.getBoundingClientRect();
+    const mapRect = document.getElementById('mapViewport').getBoundingClientRect();
+    const grassCenterX = grassRect.left - mapRect.left + grassRect.width / 2;
+    const grassCenterY = grassRect.top - mapRect.top + grassRect.height / 2;
+    const radius = Math.min(grassRect.width, grassRect.height) / 2 - 20; // 20px margin
+
+    const points = [];
+    const numPoints = 4 + Math.floor(Math.random() * 4);
+
+    for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * Math.PI * 2 + Math.random() * 0.5;
+        const r = radius * (0.6 + Math.random() * 0.35); // Stay well inside
+        const x = grassCenterX + Math.cos(angle) * r;
+        const y = grassCenterY + Math.sin(angle) * r;
+        points.push({ x, y });
+    }
+
+    return points;
+}
+
+function startPatrolling(troop) {
+    if (troop.isMoving) return;
+    
+    troop.isMoving = true;
+    const nextPoint = troop.patrolPath[troop.currentPathIndex];
+    
+    // Create trail effect
+    createTrail(troop.x, troop.y);
+    
+    // Move to next point
+    troop.element.style.left = nextPoint.x + 'px';
+    troop.element.style.top = nextPoint.y + 'px';
+    troop.element.classList.add('moving');
+    
+    troop.x = nextPoint.x;
+    troop.y = nextPoint.y;
+    troop.currentPathIndex = (troop.currentPathIndex + 1) % troop.patrolPath.length;
+    
+    setTimeout(() => {
+        troop.isMoving = false;
+        troop.element.classList.remove('moving');
+        // Continue patrolling
+        setTimeout(() => startPatrolling(troop), 1000 + Math.random() * 3000);
+    }, 2000);
+}
+
+function createTrail(x, y) {
+    const trail = document.createElement('div');
+    trail.className = 'troop-trail';
+    trail.style.left = (x + 5) + 'px';
+    trail.style.top = (y + 5) + 'px';
+    
+    document.getElementById('mapViewport').appendChild(trail);
+    
+    setTimeout(() => {
+        if (trail.parentNode) {
+            trail.parentNode.removeChild(trail);
+        }
+    }, 1000);
+}
+
+function spawnTroopsOnLevelUp(numTroops) {
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return;
+    const grassRect = grass.getBoundingClientRect();
+    const mapRect = document.getElementById('mapViewport').getBoundingClientRect();
+    const grassCenterX = grassRect.left - mapRect.left + grassRect.width / 2;
+    const grassCenterY = grassRect.top - mapRect.top + grassRect.height / 2;
+    const spawnRadius = Math.min(grassRect.width, grassRect.height) / 2 - 30;
+
+    for (let i = 0; i < numTroops; i++) {
+        setTimeout(() => {
+            const angle = (i / numTroops) * Math.PI * 2 + Math.random() * 0.5;
+            const r = spawnRadius * (0.5 + Math.random() * 0.5);
+            const x = grassCenterX + Math.cos(angle) * r;
+            const y = grassCenterY + Math.sin(angle) * r;
+            createTroop(x, y);
+        }, i * 200);
+    }
+}
+
+function clearAllTroops() {
+    troops.forEach(troop => {
+        if (troop.element && troop.element.parentNode) {
+            troop.element.parentNode.removeChild(troop.element);
+        }
+    });
+    troops = [];
+}
 
         function scheduleNotifications() {
             // Schedule daily reminder at 9 AM
@@ -1122,50 +1300,54 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         // Also save on check-in, habit toggle, and before unload
-        function completeCheckIn() {
-            const today = new Date().toDateString();
-            const allHabits = [...gameState.habits.nonNegotiable, ...gameState.habits.personal];
-            const completedHabits = allHabits.filter(habit => gameState.dailyChecks[today][habit]);
-            
-            if (completedHabits.length === allHabits.length) {
-                // All habits completed
-                gameState.xp += 100; // Give 100 XP for full completion
-                gameState.streak += 1;
+function completeCheckIn() {
+    const today = new Date().toDateString();
+    const allHabits = [...gameState.habits.nonNegotiable, ...gameState.habits.personal];
+    const completedHabits = allHabits.filter(habit => gameState.dailyChecks[today][habit]);
+    
+    if (completedHabits.length === allHabits.length) {
+        // All habits completed
+        const oldTroops = gameState.troops;
+        gameState.xp += 100;
+        gameState.streak += 1;
 
-                // Every 3 days of full completion = 10 troops
-                if (gameState.streak % 3 === 0) {
-                    gameState.troops += 10;
-                }
-
-                // Level up check (now always 100 XP required)
-                if (gameState.xp >= 100) {
-                    gameState.level += 1;
-                    gameState.xp = 0;
-                    alert(`🎉 Level Up! You are now level ${gameState.level}!`);
-                    // Only show grass alert if grass actually grows (every 2 levels)
-                    expandGrassOnLevelUp(gameState.level % 2 === 0);
-                } else {
-                    expandGrassOnLevelUp(false); // No alert, just update grass if needed
-                }
-
-                // Check for NoFap progress
-                if (gameState.habits.nonNegotiable.includes('No complaining') || 
-                    gameState.habits.personal.includes('No social media')) {
-                    gameState.nofapDays += 1;
-                    if (gameState.nofapDays % 10 === 0) {
-                        gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
-                        updateFogDisplay();
-                    }
-                }
-
-                updateStats();
-             
-            } else {
-                alert(`⚠️ You have completed ${completedHabits.length}/${allHabits.length} habits. Complete all habits to gain XP and troops.`);
-            }
-
-            closeTemple();
+        // Every 3 days of full completion = 10 troops
+        if (gameState.streak % 3 === 0) {
+            const newTroops = 10; // Always 10 new troops per reward
+            gameState.troops += newTroops;
+            setTimeout(() => {
+                spawnTroopsOnLevelUp(newTroops);
+            }, 1000);
         }
+
+        // Level up check
+        if (gameState.xp >= 100) {
+            gameState.level += 1;
+            gameState.xp = 0;
+            alert(`🎉 Level Up! You are now level ${gameState.level}!`);
+            expandGrassOnLevelUp(gameState.level % 2 === 0);
+        } else {
+            expandGrassOnLevelUp(false);
+        }
+
+        // Check for NoFap progress
+        if (gameState.habits.nonNegotiable.includes('No complaining') || 
+            gameState.habits.personal.includes('No social media')) {
+            gameState.nofapDays += 1;
+            if (gameState.nofapDays % 10 === 0) {
+                gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
+                updateFogDisplay();
+            }
+        }
+
+        updateStats();
+        
+    } else {
+        alert(`⚠️ You have completed ${completedHabits.length}/${allHabits.length} habits. Complete all habits to gain XP and troops.`);
+    }
+
+    closeTemple();
+}
 
 function expandGrassOnLevelUp(showGrassAlert = false) {
     // Each level up, reveal more grass (e.g. +10%)
@@ -1307,6 +1489,7 @@ for (let i = 0; i < bladeCount; i++) {
 }
 function logoutAndReset() {
     if (confirm('Are you sure you want to log out and reset all your progress?')) {
+        clearAllTroops();
         localStorage.removeItem('monkmode_state');
         location.reload();
     }

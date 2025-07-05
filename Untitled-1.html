@@ -573,6 +573,31 @@
             60% { filter: brightness(1.3) blur(2px); opacity: 0.9; }
             100% { filter: brightness(1) blur(0.5px); opacity: 0.7; }
         }
+
+        /* Always keep grass and temple at full opacity and brightness */
+#levelUpGrass,
+.building.temple {
+    opacity: 1 !important;
+    filter: none !important;
+    transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+
+/* Prevent map-container or map-viewport from affecting children on :active */
+.map-container:active #levelUpGrass,
+.map-container:active .building.temple,
+.map-viewport:active #levelUpGrass,
+.map-viewport:active .building.temple {
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+/* Prevent accidental dimming on focus/active for temple */
+.building.temple:active,
+.building.temple:focus {
+    opacity: 1 !important;
+    filter: none !important;
+    box-shadow: 0 0 48px 16px #ffd700cc, 0 0 0 16px #3ecf4a44 !important;
+}
     </style>
 </head>
 <body>

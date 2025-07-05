@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonkMode.online - Your Body is Your Kingdom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #1a1a3e;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Scroll of Awakening */
+        .scroll-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c1810 0%, #8b4513 100%);
+            position: relative;
+        }
+
+        .scroll-container {
+            background: rgba(255, 248, 220, 0.95);
+            color: #2c1810;
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 3px solid #8b4513;
+        }
+
+        .scroll-title {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 32px;
+            color: #8b4513;
+        }
+
+        .scroll-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* Tribe Selection */
+        .tribe-screen {
+            min-height: 100vh;
+            padding: 48px 0;
+            background: linear-gradient(135deg, #1a1a3e 0%, #2d2d5f 100%);
+        }
+
+        .tribe-title {
+            font-size: 48px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 48px;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tribes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .tribe-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tribe-card:hover {
+            transform: translateY(-8px);
+            border-color: #ffd700;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .tribe-card.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .tribe-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .tribe-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .tribe-description {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 24px;
+        }
+
+        .tribe-habits {
+            text-align: left;
+        }
+
+        .habit-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        /* Habit Selection */
+        .habit-selection {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .habit-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .habit-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .habit-option:hover {
+            border-color: #ffd700;
+        }
+
+        .habit-option.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Map Screen */
+        .map-screen {
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: grab;
+        }
+
+        .map-container:active {
+            cursor: grabbing;
+        }
+
+        .map-viewport {
+            width: 200%;
+            height: 200%;
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            transition: transform 0.3s ease;
+        }
+
+        .fog-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 70%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .building {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #8b4513;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .building:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .building.locked {
+            background: #444;
+            border-color: #666;
+            opacity: 0.5;
+        }
+
+        .building.temple {
+            background: linear-gradient(135deg, #ffd700 60%, #fffbe6 100%);
+            border: 3px solid #3ecf4a;
+            font-size: 40px;
+            box-shadow: 0 0 32px 8px #ffd70099, 0 0 0 8px #3ecf4a33;
+            z-index: 50 !important; /* Bring temple icon to the front */
+            animation: templePulse 2s infinite alternate;
+        }
+
+        @keyframes templePulse {
+            0% { box-shadow: 0 0 32px 8px #ffd70099, 0 0 0 8px #3ecf4a33; }
+            100% { box-shadow: 0 0 48px 16px #ffd700cc, 0 0 0 16px #3ecf4a44; }
+        }
+
+        /* UI Overlay */
+        .ui-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .ui-panel {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: auto;
+        }
+
+        .stats-panel {
+            top: 24px;
+            left: 24px;
+            min-width: 200px;
+        }
+
+        .temple-panel {
+            top: 24px;
+            right: 24px;
+            min-width: 300px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .habit-checklist {
+            margin-top: 16px;
+        }
+
+        .habit-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .habit-check:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .habit-check.completed {
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        .habit-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffd700;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .notification-permission {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .meditation-timer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .timer-display {
+            font-size: 72px;
+            font-weight: 200;
+            color: #ffd700;
+            margin-bottom: 32px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 16px;
+        }
+
+        .timer-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timer-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 32px;
+                margin: 20px;
+            }
+            
+            .scroll-container {
+                padding: 32px;
+                margin: 20px;
+            }
+            
+            .tribe-title {
+                font-size: 36px;
+            }
+            
+            .tribes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-panel, .temple-panel {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                margin: 16px;
+            }
+        }
+
+        /* Fire particles for oath screen */
+        #fireParticles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+            /* Add animated fire glow background */
+            background: radial-gradient(ellipse at 50% 90%, #ffd70088 0%, #ffed4a44 40%, transparent 80%);
+            animation: fireGlow 2.2s infinite alternate;
+        }
+        @keyframes fireGlow {
+            0% { filter: brightness(1) blur(0.5px); opacity: 0.7; }
+            40% { filter: brightness(1.2) blur(1.5px); opacity: 1; }
+            60% { filter: brightness(1.3) blur(2px); opacity: 0.9; }
+            100% { filter: brightness(1) blur(0.5px); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card fade-in">
+            <div class="logo">MONKMODE</div>
+            <div class="tagline">Your Body is Your Kingdom</div>
+            
+            <div class="input-group">
+                <input type="email" id="emailInput" placeholder="Enter your email" required>
+            </div>
+            
+            <button class="btn" onclick="login()">BEGIN THE JOURNEY</button>
+        </div>
+    </div>
+
+    <!-- Notification Permission -->
+    <div id="notificationScreen" class="login-screen hidden">
+        <div class="login-card fade-in">
+            <div class="logo">ENABLE NOTIFICATIONS</div>
+            <div class="tagline">Receive daily reminders to check in with your kingdom</div>
+            
+            <div class="notification-permission">
+                <p>MonkMode needs to send you daily reminders to maintain your discipline. This is essential for the system to work.</p>
+            </div>
+            
+            <button class="btn" onclick="requestNotifications()">ALLOW NOTIFICATIONS</button>
+        </div>
+    </div>
+
+    <!-- Scroll of Awakening -->
+    <div id="scrollScreen" class="scroll-screen hidden">
+        <div class="scroll-container fade-in">
+            <div class="scroll-title">SCROLL OF AWAKENING</div>
+            <div class="scroll-text">
+                <p><strong>Your body is your kingdom.</strong></p>
+                <br>
+                <p>This is not a game. This is a mirror.</p>
+                <br>
+                <p>Everything you see here is a direct reflection of your discipline in the real world. There are no shortcuts, no fake streaks, no dopamine traps.</p>
+                <br>
+                <p>You build your kingdom only by building yourself.</p>
+                <br>
+                <p>Quit bad habits → Build walls.<br>
+                Add good habits → Unlock blessings.<br>
+                Stay consistent → Gain troops.<br>
+                Quit the fog → See clearly.</p>
+                <br>
+                <p>Your realm responds to your reality. Nothing more, nothing less.</p>
+                <br>
+                <p><em>Welcome to the path of discipline.</em></p>
+            </div>
+            <button class="btn" onclick="showTribeSelection()">CHOOSE YOUR TRIBE</button>
+        </div>
+    </div>
+
+    <!-- Tribe Selection -->
+    <div id="tribeScreen" class="tribe-screen hidden">
+        <div class="container">
+            <div class="tribe-title fade-in">CHOOSE YOUR TRIBE</div>
+            
+            <div class="tribes-grid">
+                <div class="tribe-card" onclick="selectTribe('vikings')">
+                    <div class="tribe-icon">⚔️</div>
+                    <div class="tribe-name">VIKINGS</div>
+                    <div class="tribe-description">Raw power, action-oriented</div>
+                    <div class="tribe-habits">
+                        <div class="habit-item">Daily workout</div>
+                        <div class="habit-item">Cold exposure</div>
+                        <div class="habit-item">No complaining</div>
+                    </div>
+                </div>
+
+                <div class="tribe-card" onclick="selectTribe('spartans')">
+                    <div class="tribe-icon">🛡️</div>
+                    <div class="tribe-name">SPARTANS</div>
+                    <div class="tribe-description">Cold, minimalistic, pain-driven</div>
+                    <div class="tribe-habits">
+                        <div class="habit-item">Early wake (5 AM)</div>
+                        <div class="habit-item">Fasting discipline</div>
+                        <div class="habit-item">No excuses</div>
+                    </div>
+                </div>
+
+                <div class="tribe-card" onclick="selectTribe('samurais')">
+                    <div class="tribe-icon">🧘</div>
+                    <div class="tribe-name">SAMURAIS</div>
+                    <div class="tribe-description">Reflection, silence, precision</div>
+                    <div class="tribe-habits">
+                        <div class="habit-item">Daily meditation</div>
+                        <div class="habit-item">Journaling</div>
+                        <div class="habit-item">Mindful eating</div>
+                    </div>
+                </div>
+
+                <div class="tribe-card" onclick="selectTribe('kingdom')">
+                    <div class="tribe-icon">👑</div>
+                    <div class="tribe-name">KINGDOM</div>
+                    <div class="tribe-description">Visionaries, builders, balanced path</div>
+                    <div class="tribe-habits">
+                        <div class="habit-item">Daily planning</div>
+                        <div class="habit-item">Skill building</div>
+                        <div class="habit-item">Service to others</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Habit Selection -->
+    <div id="habitScreen" class="tribe-screen hidden">
+        <div class="container">
+            <div class="tribe-title fade-in">CHOOSE YOUR HABITS</div>
+            
+            <div class="habit-selection">
+                <div class="habit-title">Non-Negotiable Habits (Choose 2 of 3)</div>
+                <div class="habit-grid" id="nonNegotiableHabits">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="habit-selection">
+                <div class="habit-title">Personal Habits (Choose 3)</div>
+                <div class="habit-grid" id="personalHabits">
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Read 30 minutes</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">No social media</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Drink 8 glasses water</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">10k steps daily</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Practice gratitude</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Learn new skill</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Healthy sleep schedule</div>
+                    <div class="habit-option" onclick="toggleHabit(this, 'personal')">Meal prep</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 32px;">
+                <button class="btn" onclick="showOath()" style="width: auto; padding: 16px 48px;">PROCEED TO OATH</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oath Screen -->
+    <div id="oathScreen" class="scroll-screen hidden">
+        <!-- Fire particles background -->
+        <div id="fireParticles"></div>
+        <div class="scroll-container fade-in">
+            <div class="scroll-title">THE OATH</div>
+            <div class="scroll-text" id="oathText">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <button class="btn" onclick="enterKingdom()">I SWEAR THIS OATH</button>
+        </div>
+    </div>
+
+    <!-- Map Screen -->
+    <div id="mapScreen" class="map-screen hidden">
+        <div class="map-container" id="mapContainer">
+            <div class="map-viewport" id="mapViewport">
+                <!-- Green grass will be inserted here by JS -->
+                <div class="building temple" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" onclick="openTemple()">
+                    🏛️
+                </div>
+                <div class="building locked" style="top: 40%; left: 60%; transform: translate(-50%, -50%);">
+                    🏰
+                </div>
+                <div class="building locked" style="top: 60%; left: 40%; transform: translate(-50%, -50%);">
+                    ⚔️
+                </div>
+            </div>
+            <div class="fog-overlay" id="fogOverlay"></div>
+            <!-- Zoom Controls -->
+            <div style="position: absolute; bottom: 32px; right: 32px; z-index: 20; display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn" style="width:48px;height:48px;padding:0;font-size:28px;" onclick="zoomMap(1.2)">+</button>
+                <button class="btn" style="width:48px;height:48px;padding:0;font-size:28px;" onclick="zoomMap(0.8)">−</button>
+            </div>
+            
+            <div style="position: absolute; top: 32px; right: 32px; z-index: 30;">
+                <button class="btn" style="padding: 8px 24px; font-size: 16px; background: #ff4d4f; color: white;" onclick="logoutAndReset()">Log out</button>
+            </div>
+            
+            <div class="ui-overlay">
+                <div class="ui-panel stats-panel">
+                    <div class="stat-item">
+                        <span>Level</span>
+                        <span class="stat-value" id="playerLevel">1</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>XP</span>
+                        <span class="stat-value" id="playerXP">0 / 1000</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Troops</span>
+                        <span class="stat-value" id="playerTroops">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Streak</span>
+                        <span class="stat-value" id="playerStreak">0 days</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Fog Cleared</span>
+                        <span class="stat-value" id="fogCleared">0%</span>
+                    </div>
+                </div>
+                
+                <div class="ui-panel temple-panel" id="templePanel" style="display: none;">
+                    <div class="habit-title">Temple of Resolve</div>
+                    <div class="habit-checklist" id="habitChecklist">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <button class="btn" onclick="completeCheckIn()" style="margin-top: 16px;">COMPLETE CHECK-IN</button>
+                    <button class="btn" onclick="closeTemple()" style="margin-top: 8px; background: rgba(255,255,255,0.1); color: white;">CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meditation Timer -->
+    <div id="meditationTimer" class="meditation-timer hidden">
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        <div class="timer-controls">
+            <button class="timer-btn" onclick="startTimer()">START</button>
+            <button class="timer-btn" onclick="pauseTimer()">PAUSE</button>
+            <button class="timer-btn" onclick="resetTimer()">RESET</button>
+            <button class="timer-btn" onclick="closeTimer()">CLOSE</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            email: '',
+            tribe: '',
+            habits: {
+                nonNegotiable: [],
+                personal: []
+            },
+            level: 1,
+            xp: 0,
+            troops: 0,
+            streak: 0,
+            fogCleared: 0,
+            buildings: {},
+            dailyChecks: {},
+            nofapDays: 0,
+            sessionStart: Date.now(),
+            overuseWarning: false
+        };
+
+        // Tribe Data
+        const tribeData = {
+            vikings: {
+                habits: ['Daily workout', 'Cold exposure', 'No complaining'],
+                oath: 'I swear by the hammer of Thor, by the strength of my ancestors, and by the fire in my blood that I will not yield to weakness. I will face each day with the fury of a warrior and the discipline of a king. My body is my weapon, my mind is my shield, and my spirit is unbreakable. I choose the path of the Viking.',
+                terrain: 'snow'
+            },
+            spartans: {
+                habits: ['Early wake (5 AM)', 'Fasting discipline', 'No excuses'],
+                oath: 'I swear by the laws of Sparta, by the honor of my shield, and by the blood of my brothers that I will endure all pain and overcome all obstacles. I will rise before the sun and sleep after the stars. My discipline is my freedom, my pain is my strength. I choose the path of the Spartan.',
+                terrain: 'desert'
+            },
+            samurais: {
+                habits: ['Daily meditation', 'Journaling', 'Mindful eating'],
+                oath: 'I swear by the way of the sword, by the silence of the mountain, and by the wisdom of my ancestors that I will walk the path of discipline with precision and grace. I will be mindful in all things, present in each moment, and honorable in every action. I choose the path of the Samurai.',
+                terrain: 'forest'
+            },
+            kingdom: {
+                habits: ['Daily planning', 'Skill building', 'Service to others'],
+                oath: 'I swear by the crown of my potential, by the vision of my future, and by the legacy I will leave that I will build my kingdom with wisdom and strength. I will serve others as I serve myself, and I will grow each day toward greatness. My discipline is my foundation, my consistency is my power. I choose the path of the Kingdom.',
+                terrain: 'plains'
+            }
+        };
+
+        // Session Management
+        let sessionTimer;
+        let meditationInterval;
+        let timerSeconds = 300; // 5 minutes
+
+        function startSessionTimer() {
+            sessionTimer = setInterval(() => {
+                const elapsed = Date.now() - gameState.sessionStart;
+                const minutes = elapsed / (1000 * 60);
+                
+                if (minutes > 60 && !gameState.overuseWarning) {
+                    gameState.overuseWarning = true;
+                    alert('⚠️ Night Attack Warning! You have been online for over 1 hour. Your troops are at risk!');
+                }
+                
+                if (minutes > 70) {
+                    gameState.troops = Math.floor(gameState.troops * 0.8);
+                    updateStats();
+                    alert('🌙 Night Attack! You lost 20% of your troops due to overuse. Return tomorrow, warrior.');
+                }
+            }, 60000);
+        }
+
+        // Login Functions
+        function login() {
+            const email = document.getElementById('emailInput').value;
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+            gameState.email = email;
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('notificationScreen').classList.remove('hidden');
+        }
+
+        function requestNotifications() {
+            if (Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        scheduleNotifications();
+                    }
+                    showScrollOfAwakening();
+                });
+            } else {
+                showScrollOfAwakening();
+            }
+        }
+
+        function scheduleNotifications() {
+            // Schedule daily reminder at 9 AM
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0);
+            
+            const timeToTomorrow = tomorrow.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                if (Notification.permission === 'granted') {
+                    new Notification('MonkMode Reminder', {
+                        body: 'Time to check in with your kingdom, warrior.',
+                        icon: '🏰'
+                    });
+                }
+                // Schedule recurring notifications
+                setInterval(() => {
+                    if (Notification.permission === 'granted') {
+                        new Notification('MonkMode Reminder', {
+                            body: 'Time to check in with your kingdom, warrior.',
+                            icon: '🏰'
+                        });
+                    }
+                }, 24 * 60 * 60 * 1000); // 24 hours
+            }, timeToTomorrow);
+        }
+
+        function showScrollOfAwakening() {
+            document.getElementById('notificationScreen').classList.add('hidden');
+            document.getElementById('scrollScreen').classList.remove('hidden');
+        }
+
+        function showTribeSelection() {
+            document.getElementById('scrollScreen').classList.add('hidden');
+            document.getElementById('tribeScreen').classList.remove('hidden');
+        }
+
+        function selectTribe(tribe) {
+            gameState.tribe = tribe;
+            // Remove previous selections
+            document.querySelectorAll('.tribe-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            // Add selection to clicked tribe
+            event.target.closest('.tribe-card').classList.add('selected');
+            
+            setTimeout(() => {
+                showHabitSelection();
+            }, 500);
+        }
+
+        function showHabitSelection() {
+            document.getElementById('tribeScreen').classList.add('hidden');
+            document.getElementById('habitScreen').classList.remove('hidden');
+
+            // Reset selected habits when entering the screen
+            gameState.habits.nonNegotiable = [];
+            gameState.habits.personal = [];
+
+            // Populate non-negotiable habits
+            const nonNegotiableContainer = document.getElementById('nonNegotiableHabits');
+            const tribeHabits = tribeData[gameState.tribe].habits;
+
+            nonNegotiableContainer.innerHTML = '';
+            tribeHabits.forEach(habit => {
+                const habitDiv = document.createElement('div');
+                habitDiv.className = 'habit-option';
+                habitDiv.textContent = habit;
+                habitDiv.onclick = () => toggleHabit(habitDiv, 'nonNegotiable');
+                nonNegotiableContainer.appendChild(habitDiv);
+            });
+
+            // Also clear selection from personal habits
+            document.querySelectorAll('#personalHabits .habit-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+
+        function toggleHabit(element, type) {
+            const habitText = element.textContent;
+            const isSelected = element.classList.contains('selected');
+
+            if (type === 'nonNegotiable') {
+                if (isSelected) {
+                    element.classList.remove('selected');
+                    gameState.habits.nonNegotiable = gameState.habits.nonNegotiable.filter(h => h !== habitText);
+                } else {
+                    const selectedCount = gameState.habits.nonNegotiable.length;
+                    if (selectedCount >= 2) {
+                        alert('You can only select 2 non-negotiable habits');
+                        return;
+                    }
+                    element.classList.add('selected');
+                    gameState.habits.nonNegotiable.push(habitText);
+                }
+            } else {
+                if (isSelected) {
+                    element.classList.remove('selected');
+                    gameState.habits.personal = gameState.habits.personal.filter(h => h !== habitText);
+                } else {
+                    const selectedCount = gameState.habits.personal.length;
+                    if (selectedCount >= 3) {
+                        alert('You can only select 3 personal habits');
+                        return;
+                    }
+                    element.classList.add('selected');
+                    gameState.habits.personal.push(habitText);
+                }
+            }
+        }
+
+        function showOath() {
+            if (gameState.habits.nonNegotiable.length < 2) {
+                alert('Please select 2 non-negotiable habits');
+                return;
+            }
+            if (gameState.habits.personal.length < 3) {
+                alert('Please select 3 personal habits');
+                return;
+            }
+            
+            document.getElementById('habitScreen').classList.add('hidden');
+            document.getElementById('oathScreen').classList.remove('hidden');
+            
+            // Set oath text
+            document.getElementById('oathText').innerHTML = `<p>${tribeData[gameState.tribe].oath}</p>`;
+        }
+
+        function enterKingdom() {
+            document.getElementById('oathScreen').classList.add('hidden');
+            document.getElementById('mapScreen').classList.remove('hidden');
+            
+            // Initialize kingdom
+            initializeKingdom();
+            startSessionTimer();
+        }
+
+        function initializeKingdom() {
+            // Initialize buildings
+            gameState.buildings = {
+                temple: { unlocked: true, level: 1 },
+                walls: { unlocked: false, level: 0 },
+                forge: { unlocked: false, level: 0 },
+                barracks: { unlocked: false, level: 0 }
+            };
+
+            // Start with some grass visible (e.g. 15% fog cleared)
+            if (!gameState.fogCleared || gameState.fogCleared < 15) {
+                gameState.fogCleared = 15;
+            }
+            updateFogDisplay();
+
+            // Initialize daily checks
+            const today = new Date().toDateString();
+            if (!gameState.dailyChecks[today]) {
+                gameState.dailyChecks[today] = {};
+                [...gameState.habits.nonNegotiable, ...gameState.habits.personal].forEach(habit => {
+                    gameState.dailyChecks[today][habit] = false;
+                });
+            }
+
+            updateStats();
+            populateHabitChecklist();
+            setupMapInteraction();
+        }
+
+        let mapTransform = { x: 0, y: 0, scale: 1 };
+
+function applyMapTransform() {
+    const mapViewport = document.getElementById('mapViewport');
+    mapViewport.style.transform = `translate(${mapTransform.x}px, ${mapTransform.y}px) scale(${mapTransform.scale})`;
+}
+
+function setupMapInteraction() {
+    const mapContainer = document.getElementById('mapContainer');
+    const mapViewport = document.getElementById('mapViewport');
+    let isDragging = false;
+    let startX, startY;
+
+    mapContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - mapTransform.x;
+        startY = e.clientY - mapTransform.y;
+    });
+
+    mapContainer.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        mapTransform.x = e.clientX - startX;
+        mapTransform.y = e.clientY - startY;
+        mapTransform.x = Math.max(Math.min(mapTransform.x, 200), -200);
+        mapTransform.y = Math.max(Math.min(mapTransform.y, 200), -200);
+        applyMapTransform();
+    });
+
+    mapContainer.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    // Touch events for mobile
+    mapContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        startX = touch.clientX - mapTransform.x;
+        startY = touch.clientY - mapTransform.y;
+    });
+
+    mapContainer.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        mapTransform.x = touch.clientX - startX;
+        mapTransform.y = touch.clientY - startY;
+        mapTransform.x = Math.max(Math.min(mapTransform.x, 200), -200);
+        mapTransform.y = Math.max(Math.min(mapTransform.y, 200), -200);
+        applyMapTransform();
+    });
+
+    mapContainer.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+}
+
+function zoomMap(factor) {
+    mapTransform.scale = Math.max(0.5, Math.min(mapTransform.scale * factor, 2.5));
+    applyMapTransform();
+}
+
+        // Save progress to localStorage every time gameState changes
+function saveProgress() {
+    localStorage.setItem('monkmode_state', JSON.stringify(gameState));
+}
+
+// Load progress from localStorage on page load
+function loadProgress() {
+    const saved = localStorage.getItem('monkmode_state');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            // Merge saved state into gameState
+            Object.assign(gameState, parsed);
+        } catch (e) {
+            console.error('Failed to load saved progress:', e);
+        }
+    }
+}
+
+// Call loadProgress at the very start (before any UI logic)
+loadProgress();
+
+// Save progress on every important change
+        function updateStats() {
+            document.getElementById('playerLevel').textContent = gameState.level;
+            document.getElementById('playerXP').textContent = `${gameState.xp} / 100`;
+            document.getElementById('playerTroops').textContent = gameState.troops;
+            document.getElementById('playerStreak').textContent = `${gameState.streak} days`;
+            document.getElementById('fogCleared').textContent = `${gameState.fogCleared}%`;
+            saveProgress();
+        }
+
+        // Also save on check-in, habit toggle, and before unload
+        function completeCheckIn() {
+            const today = new Date().toDateString();
+            const allHabits = [...gameState.habits.nonNegotiable, ...gameState.habits.personal];
+            const completedHabits = allHabits.filter(habit => gameState.dailyChecks[today][habit]);
+            
+            if (completedHabits.length === allHabits.length) {
+                // All habits completed
+                gameState.xp += 100; // Give 100 XP for full completion
+                gameState.streak += 1;
+
+                // Every 3 days of full completion = 10 troops
+                if (gameState.streak % 3 === 0) {
+                    gameState.troops += 10;
+                }
+
+                // Level up check (now always 100 XP required)
+                if (gameState.xp >= 100) {
+                    gameState.level += 1;
+                    gameState.xp = 0;
+                    alert(`🎉 Level Up! You are now level ${gameState.level}!`);
+                    // Only show grass alert if grass actually grows (every 2 levels)
+                    expandGrassOnLevelUp(gameState.level % 2 === 0);
+                } else {
+                    expandGrassOnLevelUp(false); // No alert, just update grass if needed
+                }
+
+                // Check for NoFap progress
+                if (gameState.habits.nonNegotiable.includes('No complaining') || 
+                    gameState.habits.personal.includes('No social media')) {
+                    gameState.nofapDays += 1;
+                    if (gameState.nofapDays % 10 === 0) {
+                        gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
+                        updateFogDisplay();
+                    }
+                }
+
+                updateStats();
+                alert('✅ Check-in complete!');
+            } else {
+                alert(`⚠️ You have completed ${completedHabits.length}/${allHabits.length} habits. Complete all habits to gain XP and troops.`);
+            }
+
+            closeTemple();
+        }
+
+        // Expand grass/fog cleared on each level up
+        function expandGrassOnLevelUp(showGrassAlert = false) {
+            // Each level up, reveal more grass (e.g. +10%)
+            gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
+            updateFogDisplay();
+            updateStats();
+
+            // Calculate size: base 150px, +20% every 2 levels
+            const baseSize = 150;
+            const growthSteps = Math.floor(gameState.level / 2);
+            const size = baseSize * (1 + 0.2 * growthSteps);
+
+            // Show "Your kingdom grows stronger" ONLY if called with showGrassAlert=true
+            if (showGrassAlert) {
+                alert('✅ Your kingdom grows stronger. Grass has expanded!');
+            }
+
+            // Save grass size to gameState for persistence
+            gameState.grassSize = size;
+
+            // Add or update grass patch in the middle of the map
+            const mapViewport = document.getElementById('mapViewport');
+            let grass = document.getElementById('levelUpGrass');
+            if (!grass) {
+                grass = document.createElement('div');
+                grass.id = 'levelUpGrass';
+                grass.style.position = 'absolute';
+                grass.style.top = '50%';
+                grass.style.left = '50%';
+                grass.style.transform = 'translate(-50%, -50%)';
+                grass.style.pointerEvents = 'none';
+                grass.style.zIndex = '1'; // Behind the temple icon
+                mapViewport.insertBefore(grass, mapViewport.firstChild);
+            }
+            // Make it look like grass with texture and random blades
+            grass.style.width = `${size}px`;
+            grass.style.height = `${size}px`;
+
+            // Generate a random grass SVG pattern (smaller, more common, random placement)
+            let svg = '';
+            const bladeCount = Math.floor((size * size) / 120); // denser
+            for (let i = 0; i < bladeCount; i++) {
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const h = 8 + Math.random() * 10;
+                const c = Math.random() > 0.5 ? '#3ecf4a' : '#2fa13a';
+                svg += `<path d="M${x},${y+12} Q${x+1},${y+6} ${x+2},${y+12}" stroke='${c}' stroke-width='1.1' fill='none'/>`;
+            }
+            const svgStr = `<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
+            const encoded = encodeURIComponent(svgStr);
+
+            grass.style.background = `
+                linear-gradient(180deg, #4be04b 0%, #2fa13a 100%),
+                url('data:image/svg+xml;utf8,${encoded}') repeat,
+                repeating-linear-gradient(135deg, #43e04a22 0 4px, transparent 4px 12px)
+            `;
+            grass.style.backgroundBlendMode = 'multiply';
+            grass.style.backgroundColor = '#3ecf4a';
+            grass.style.boxShadow = '0 4px 24px 0 #2fa13a44';
+            grass.style.opacity = '1';
+            grass.style.borderRadius = '10px';
+            grass.style.border = '2px solid #2fa13a';
+        }
+
+        // Restore grass on reload (NO alert)
+        if (gameState.grassSize) {
+            setTimeout(() => {
+                expandGrassOnLevelUp(false);
+            }, 200);
+        }
+
+        function updateFogDisplay() {
+            // Example: update fog overlay based on gameState.fogCleared
+            const fog = document.getElementById('fogOverlay');
+            if (fog) {
+                fog.style.opacity = `${1 - (gameState.fogCleared / 100)}`;
+            }
+        }
+
+        function zoomMap(factor) {
+            // Simple zoom for mapViewport
+            const mapViewport = document.getElementById('mapViewport');
+            if (!mapViewport) return;
+            let currentScale = parseFloat(mapViewport.dataset.scale) || 1;
+            currentScale *= factor;
+            currentScale = Math.max(0.5, Math.min(currentScale, 2.5));
+            mapViewport.style.transform = `scale(${currentScale})`;
+            mapViewport.dataset.scale = currentScale;
+        }
+
+        function openTemple() {
+            document.getElementById('templePanel').style.display = 'block';
+        }
+
+        function closeTemple() {
+            document.getElementById('templePanel').style.display = 'none';
+        }
+
+        function createFireParticles() {
+    const container = document.getElementById('fireParticles');
+    if (!container) return;
+    container.innerHTML = '';
+    const colors = [
+        '#ffb347', '#ff9447', '#ffd700', '#ff5e13', '#ffb347', '#fffbe6',
+        '#fff176', '#ffe066', '#ffb300'
+    ];
+    const numParticles = 65; // More particles for richer effect
+    for (let i = 0; i < numParticles; i++) {
+        const p = document.createElement('div');
+        const size = Math.random() * 18 + 12;
+        p.style.position = 'absolute';
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.bottom = `${Math.random() * 30}%`;
+        p.style.width = `${size}px`;
+        p.style.height = `${size * (1.2 + Math.random()*0.7)}px`;
+        p.style.background = `radial-gradient(ellipse at center, ${colors[Math.floor(Math.random()*colors.length)]} 0%, transparent 80%)`;
+        p.style.opacity = (Math.random() * 0.5 + 0.3).toFixed(2);
+        p.style.borderRadius = '50% 50% 60% 60%/60% 60% 100% 100%';
+        p.style.filter = `blur(${Math.random() * 2 + 0.5}px)`;
+        p.style.animation = `fireRise ${2 + Math.random() * 2.5}s linear infinite`;
+        p.style.animationDelay = `${Math.random() * 2.5}s`;
+        container.appendChild(p);
+    }
+}
+
+// Add this function to your script
+function populateHabitChecklist() {
+    const checklist = document.getElementById('habitChecklist');
+    if (!checklist) return;
+    checklist.innerHTML = '';
+    const today = new Date().toDateString();
+    const allHabits = [...gameState.habits.nonNegotiable, ...gameState.habits.personal];
+    allHabits.forEach(habit => {
+        const isChecked = gameState.dailyChecks[today] && gameState.dailyChecks[today][habit];
+        const div = document.createElement('div');
+        div.className = 'habit-check' + (isChecked ? ' completed' : '');
+        div.onclick = () => {
+            gameState.dailyChecks[today][habit] = !gameState.dailyChecks[today][habit];
+            populateHabitChecklist();
+        };
+        div.innerHTML = `
+            <span class="habit-checkbox">${isChecked ? '✔️' : ''}</span>
+            <span>${habit}</span>
+        `;
+        checklist.appendChild(div);
+    });
+}
+    </script>
+</body>
+</html>

@@ -768,7 +768,8 @@
             dailyChecks: {},
             nofapDays: 0,
             sessionStart: Date.now(),
-            overuseWarning: false
+            overuseWarning: false,
+            hasEnteredKingdom: false
         };
 
         // Tribe Data
@@ -975,8 +976,8 @@
         function enterKingdom() {
             document.getElementById('oathScreen').classList.add('hidden');
             document.getElementById('mapScreen').classList.remove('hidden');
-            
-            // Initialize kingdom
+            gameState.hasEnteredKingdom = true; // <-- set the flag
+            saveProgress(); // <-- save immediately
             initializeKingdom();
             startSessionTimer();
         }
@@ -1093,7 +1094,24 @@ function loadProgress() {
 // Call loadProgress at the very start (before any UI logic)
 loadProgress();
 
-// Save progress on every important change
+// After loadProgress();
+window.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    if (gameState.hasEnteredKingdom) {
+        // Skip onboarding, go straight to map
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('notificationScreen').classList.add('hidden');
+        document.getElementById('scrollScreen').classList.add('hidden');
+        document.getElementById('tribeScreen').classList.add('hidden');
+        document.getElementById('habitScreen').classList.add('hidden');
+        document.getElementById('oathScreen').classList.add('hidden');
+        document.getElementById('mapScreen').classList.remove('hidden');
+        initializeKingdom();
+        startSessionTimer();
+    }
+});
+
+        // Save progress on every important change
         function updateStats() {
             document.getElementById('playerLevel').textContent = gameState.level;
             document.getElementById('playerXP').textContent = `${gameState.xp} / 100`;
@@ -1150,70 +1168,70 @@ loadProgress();
         }
 
         // Expand grass/fog cleared on each level up
-        function expandGrassOnLevelUp(showGrassAlert = false) {
-            // Each level up, reveal more grass (e.g. +10%)
-            gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
-            updateFogDisplay();
-            updateStats();
+function expandGrassOnLevelUp(showGrassAlert = false) {
+    // Each level up, reveal more grass (e.g. +10%)
+    gameState.fogCleared = Math.min(100, gameState.fogCleared + 10);
+    updateFogDisplay();
+    updateStats();
 
-            // Calculate size: base 150px, +20% every 2 levels
-            const baseSize = 150;
-            const growthSteps = Math.floor(gameState.level / 2);
-            const size = baseSize * (1 + 0.2 * growthSteps);
+    // Calculate size: base 150px, +20% every 2 levels
+    const baseSize = 150;
+    const growthSteps = Math.floor(gameState.level / 2);
+    const size = baseSize * (1 + 0.2 * growthSteps);
 
-            // Show "Your kingdom grows stronger" ONLY if called with showGrassAlert=true
-            if (showGrassAlert) {
-                alert('✅ Your kingdom grows stronger. Grass has expanded!');
-            }
+    // Show "Your kingdom grows stronger" ONLY if called with showGrassAlert=true
+    if (showGrassAlert) {
+        alert('✅ Your kingdom grows stronger. Grass has expanded!');
+    }
 
-            // Save grass size to gameState for persistence
-            gameState.grassSize = size;
+    // Save grass size to gameState for persistence
+    gameState.grassSize = size;
 
-            // Add or update grass patch in the middle of the map
-            const mapViewport = document.getElementById('mapViewport');
-            let grass = document.getElementById('levelUpGrass');
-            if (!grass) {
-                grass = document.createElement('div');
-                grass.id = 'levelUpGrass';
-                grass.style.position = 'absolute';
-                grass.style.top = '50%';
-                grass.style.left = '50%';
-                grass.style.transform = 'translate(-50%, -50%)';
-                grass.style.pointerEvents = 'none';
-                grass.style.zIndex = '1'; // Behind the temple icon
-                mapViewport.insertBefore(grass, mapViewport.firstChild);
-            }
-            // Make it look like grass with texture and random blades
-            grass.style.width = `${size}px`;
-            grass.style.height = `${size}px`;
+    // Add or update grass patch in the middle of the map
+    const mapViewport = document.getElementById('mapViewport');
+    let grass = document.getElementById('levelUpGrass');
+    if (!grass) {
+        grass = document.createElement('div');
+        grass.id = 'levelUpGrass';
+        grass.style.position = 'absolute';
+        grass.style.top = '50%';
+        grass.style.left = '50%';
+        grass.style.transform = 'translate(-50%, -50%)';
+        grass.style.pointerEvents = 'none';
+        grass.style.zIndex = '1'; // Behind the temple icon
+        mapViewport.insertBefore(grass, mapViewport.firstChild);
+    }
+    // Make it look like grass with texture and random blades
+    grass.style.width = `${size}px`;
+    grass.style.height = `${size}px`;
 
-            // Generate a random grass SVG pattern (smaller, more common, random placement)
-            let svg = '';
-            const bladeCount = Math.floor((size * size) / 120); // denser
-            for (let i = 0; i < bladeCount; i++) {
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                const h = 8 + Math.random() * 10;
-                const c = Math.random() > 0.5 ? '#3ecf4a' : '#2fa13a';
-                svg += `<path d="M${x},${y+12} Q${x+1},${y+6} ${x+2},${y+12}" stroke='${c}' stroke-width='1.1' fill='none'/>`;
-            }
-            const svgStr = `<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
-            const encoded = encodeURIComponent(svgStr);
+    // Generate a random grass SVG pattern (smaller, more common, random placement)
+    let svg = '';
+    const bladeCount = Math.floor((size * size) / 120); // denser
+    for (let i = 0; i < bladeCount; i++) {
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const h = 8 + Math.random() * 10;
+        const c = Math.random() > 0.5 ? '#3ecf4a' : '#2fa13a';
+        svg += `<path d="M${x},${y+12} Q${x+1},${y+6} ${x+2},${y+12}" stroke='${c}' stroke-width='1.1' fill='none'/>`;
+    }
+    const svgStr = `<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;
+    const encoded = encodeURIComponent(svgStr);
 
-            grass.style.background = `
-                linear-gradient(180deg, #4be04b 0%, #2fa13a 100%),
-                url('data:image/svg+xml;utf8,${encoded}') repeat,
-                repeating-linear-gradient(135deg, #43e04a22 0 4px, transparent 4px 12px)
-            `;
-            grass.style.backgroundBlendMode = 'multiply';
-            grass.style.backgroundColor = '#3ecf4a';
-            grass.style.boxShadow = '0 4px 24px 0 #2fa13a44';
-            grass.style.opacity = '1';
-            grass.style.borderRadius = '10px';
-            grass.style.border = '2px solid #2fa13a';
-        }
+    grass.style.background = `
+        linear-gradient(180deg, #4be04b 0%, #2fa13a 100%),
+        url('data:image/svg+xml;utf8,${encoded}') repeat,
+        repeating-linear-gradient(135deg, #43e04a22 0 4px, transparent 4px 12px)
+    `;
+    grass.style.backgroundBlendMode = 'multiply';
+    grass.style.backgroundColor = '#3ecf4a';
+    grass.style.boxShadow = '0 4px 24px 0 #2fa13a44';
+    grass.style.opacity = '1';
+    grass.style.borderRadius = '10px';
+    grass.style.border = '2px solid #2fa13a';
+}
 
-        // Restore grass on reload (NO alert)
+// Restore grass on reload (NO alert)
         if (gameState.grassSize) {
             setTimeout(() => {
                 expandGrassOnLevelUp(false);

@@ -931,9 +931,9 @@
                     element.classList.remove('selected');
                     gameState.habits.nonNegotiable = gameState.habits.nonNegotiable.filter(h => h !== habitText);
                 } else {
-                    const selectedCount = gameState.habits.nonNegotiable.length;
-                    if (selectedCount >= 2) {
-                        alert('You can only select 2 non-negotiable habits');
+                    // Allow up to 3 selections (all habits), but require at least 2 to proceed
+                    if (gameState.habits.nonNegotiable.length >= 3) {
+                        alert('You can only select up to 3 non-negotiable habits');
                         return;
                     }
                     element.classList.add('selected');
@@ -957,7 +957,7 @@
 
         function showOath() {
             if (gameState.habits.nonNegotiable.length < 2) {
-                alert('Please select 2 non-negotiable habits');
+                alert('Please select at least 2 non-negotiable habits');
                 return;
             }
             if (gameState.habits.personal.length < 3) {

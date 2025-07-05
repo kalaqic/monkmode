@@ -1159,7 +1159,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
 
                 updateStats();
-                alert('✅ Check-in complete!');
+             
             } else {
                 alert(`⚠️ You have completed ${completedHabits.length}/${allHabits.length} habits. Complete all habits to gain XP and troops.`);
             }
@@ -1303,6 +1303,12 @@ for (let i = 0; i < bladeCount; i++) {
         p.style.animation = `fireRise ${2 + Math.random() * 2.5}s linear infinite`;
         p.style.animationDelay = `${Math.random() * 2.5}s`;
         container.appendChild(p);
+    }
+}
+function logoutAndReset() {
+    if (confirm('Are you sure you want to log out and reset all your progress?')) {
+        localStorage.removeItem('monkmode_state');
+        location.reload();
     }
 }
 

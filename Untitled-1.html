@@ -23,6 +23,45 @@
             margin: 0 auto;
             padding: 0 20px;
         }
+.bush-sprite {
+    position: absolute;
+    width: 128px;
+    height: 128px;
+    background-image: url('Bushe1.png');
+    background-repeat: no-repeat;
+    background-size: 1024px 128px;
+    pointer-events: none;
+    z-index: 5;
+    transform: scale(0.5); /* smanji ali zadrži ispravne pozicije frejmova */
+    transform-origin: top left;
+    animation: bushIdle 1s steps(8) infinite;
+}
+
+@keyframes bushIdle {
+    from { background-position-x: 0; }
+    to   { background-position-x: -1024px; }
+}
+
+.sheep-sprite {
+    position: absolute;
+    width: 128px;
+    height: 128px;
+    background-image: url('Sheep_Idle.png');
+    background-repeat: no-repeat;
+    background-size: 768px 128px;
+    pointer-events: none;
+    z-index: 6;
+    transform: scale(0.5);
+    transform-origin: top left;
+    animation: sheepIdle 0.8s steps(6) infinite;
+}
+
+@keyframes sheepIdle {
+    from { background-position-x: 0; }
+    to   { background-position-x: -768px; }
+}
+
+
 
         /* Login Screen */
         .login-screen {
@@ -1455,6 +1494,8 @@ for (let i = 0; i < bladeCount; i++) {
         flower.style.boxShadow = '0 0 2px rgba(255,255,255,0.8)';
         grass.appendChild(flower);
     }
+    spawnRandomBushes(1); // broj žbunova koje želiš
+    spawnRandomSheep(2); // broj ovaca koje želiš
 }
 
 // Restore grass on reload (NO alert)
@@ -1591,6 +1632,44 @@ function syncTroopsWithGameState() {
         createTroop(x, y);
     }
 }
+function spawnRandomBushes(count = 10) {
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return;
+
+    const bushSize = 128; // koristimo originalnu veličinu
+    const visibleSize = bushSize * 0.5;
+    const grassWidth = grass.offsetWidth;
+    const grassHeight = grass.offsetHeight;
+
+    for (let i = 0; i < count; i++) {
+        const bush = document.createElement('div');
+        bush.className = 'bush-sprite';
+        bush.style.left = `${Math.random() * (grassWidth - visibleSize)}px`;
+        bush.style.top = `${Math.random() * (grassHeight - visibleSize)}px`;
+        grass.appendChild(bush);
+    }
+}
+function spawnRandomSheep(count = 4) {
+    const grass = document.getElementById('levelUpGrass');
+    if (!grass) return;
+
+    const sheepSize = 128;
+    const visibleSize = sheepSize * 0.5;
+    const grassWidth = grass.offsetWidth;
+    const grassHeight = grass.offsetHeight;
+
+    for (let i = 0; i < count; i++) {
+        const sheep = document.createElement('div');
+        sheep.className = 'sheep-sprite';
+        sheep.style.left = `${Math.random() * (grassWidth - visibleSize)}px`;
+        sheep.style.top = `${Math.random() * (grassHeight - visibleSize)}px`;
+        grass.appendChild(sheep);
+    }
+}
+
+
+
+
     </script>
 </body>
 </html>

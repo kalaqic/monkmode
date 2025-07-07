@@ -357,6 +357,24 @@
             border-color: #666;
             opacity: 0.5;
         }
+.building.castle {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100px !important;
+    height: auto !important;
+    z-index: 50 !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.building.castle img {
+    width: 100px;
+    height: auto;
+    display: block;
+    pointer-events: none;
+}
 /* Troop Animation Styles */
 .troop {
     position: absolute;
@@ -797,15 +815,10 @@
         <div class="map-container" id="mapContainer">
             <div class="map-viewport" id="mapViewport">
                 <!-- Green grass will be inserted here by JS -->
-                <div class="building temple" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" onclick="openTemple()">
-                    🏛️
-                </div>
-                <div class="building locked" style="top: 40%; left: 60%; transform: translate(-50%, -50%);">
-                    🏰
-                </div>
-                <div class="building locked" style="top: 60%; left: 40%; transform: translate(-50%, -50%);">
-                    ⚔️
-                </div>
+                <div class="building castle" style="top: 50%; left: 50%; transform: translate(-50%, -50%); background: none; border: none; box-shadow: none;" onclick="openTemple()">
+    <img src="castle.png" alt="Castle" style="width: 100px; height: auto; display: block; margin: 0 auto; pointer-events: none;">
+</div>
+               
             </div>
             <div class="fog-overlay" id="fogOverlay"></div>
             <!-- Zoom Controls -->

@@ -361,19 +361,46 @@
     background: none !important;
     border: none !important;
     box-shadow: none !important;
-    width: 100px !important;
-    height: auto !important;
+    width: 80px !important;
+    height: 80px !important;
     z-index: 50 !important;
     padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    transition: none;
+    animation: none;
+    overflow: visible;
 }
-.building.castle img {
-    width: 100px;
-    height: auto;
-    display: block;
+
+.castle-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 120px;
+    height: 120px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffd70088 0%, #ffd70022 60%, transparent 100%);
+    z-index: 1;
     pointer-events: none;
+    transition: background 0.5s;
+    animation: castleGlowPulse 2s infinite alternate;
+}
+
+.building.castle.completed .castle-glow {
+    background: radial-gradient(circle, #3ecf4a99 0%, #3ecf4a33 60%, transparent 100%);
+    animation: castleGlowPulseGreen 2s infinite alternate;
+}
+
+@keyframes castleGlowPulse {
+    0% { opacity: 0.7; filter: blur(1px);}
+    100% { opacity: 1; filter: blur(3px);}
+}
+@keyframes castleGlowPulseGreen {
+    0% { opacity: 0.7; filter: blur(1px);}
+    100% { opacity: 1; filter: blur(3px);}
 }
 /* Troop Animation Styles */
 .troop {
@@ -815,8 +842,9 @@
         <div class="map-container" id="mapContainer">
             <div class="map-viewport" id="mapViewport">
                 <!-- Green grass will be inserted here by JS -->
-                <div class="building castle" style="top: 50%; left: 50%; transform: translate(-50%, -50%); background: none; border: none; box-shadow: none;" onclick="openTemple()">
-    <img src="castle.png" alt="Castle" style="width: 100px; height: auto; display: block; margin: 0 auto; pointer-events: none;">
+                <div class="building castle" style="top: 50%; left: 50%; transform: translate(-50%, -50%); background: none; border: none;" onclick="openTemple()">
+    <div class="castle-glow"></div>
+    <img src="castle.png" alt="Castle" style="width: 80px; height: auto; display: block; margin: 0 auto; pointer-events: none; position: relative; z-index: 2;">
 </div>
                
             </div>
@@ -1249,7 +1277,14 @@ function clearAllTroops() {
                 barracks: { unlocked: false, level: 0 }
             };
 
-            // Start with some grass visible (e.g. 15% fog cleared)
+            // Always ensure some grass exists at the start
+            if (!gameState.grassSize) {
+                gameState.grassSize = 150; // base size
+            }
+
+            expandGrassOnLevelUp(false); // <-- Always create/update grass
+
+            // Start with some fog cleared (e.g. 15%)
             if (!gameState.fogCleared || gameState.fogCleared < 15) {
                 gameState.fogCleared = 15;
             }
@@ -1587,8 +1622,10 @@ function populateHabitChecklist() {
     checklist.innerHTML = '';
     const today = new Date().toDateString();
     const allHabits = [...gameState.habits.nonNegotiable, ...gameState.habits.personal];
+    let allCompleted = true;
     allHabits.forEach(habit => {
         const isChecked = gameState.dailyChecks[today] && gameState.dailyChecks[today][habit];
+        if (!isChecked) allCompleted = false;
         const div = document.createElement('div');
         div.className = 'habit-check' + (isChecked ? ' completed' : '');
         div.onclick = () => {
@@ -1601,6 +1638,15 @@ function populateHabitChecklist() {
         `;
         checklist.appendChild(div);
     });
+    // Toggle castle glow color
+    const castle = document.querySelector('.building.castle');
+    if (castle) {
+        if (allCompleted) {
+            castle.classList.add('completed');
+        } else {
+            castle.classList.remove('completed');
+        }
+    }
 }
 
 function syncTroopsWithGameState() {
